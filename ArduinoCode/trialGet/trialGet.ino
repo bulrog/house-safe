@@ -6,14 +6,11 @@
 SoftwareSerial ESP8266(10,11);
 
 //wifi name and ssid to connect to:
-String nomWifi="******";
-String ssid="***************";
+String nomWifi="*****";
+String ssid="*****";
 
 
-
-void setup() {
-
-  
+void initializeWifi(){
   //set serial to see in serial monitor results:
   Serial.begin(9600);
   //set serial emulator to 115200 bauds:
@@ -41,7 +38,9 @@ void setup() {
   ESP8266.println("AT+CIPMUX=1");
   //should get OK:
   recoitDuESP8266(1000);
-  String request="google.com";
+}
+
+void performGetRequest(String request){
        int slash = request.indexOf('/');
      
      //grab the domain
@@ -77,7 +76,14 @@ void setup() {
   ESP8266.print(getCommand);
   //should get received 18 bytes and mentioned send ok and then receive the response and then 4,closed
   recoitDuESP8266(5000);
+}
 
+void setup() {
+  initializeWifi();
+  
+  
+  String request="google.com";
+performGetRequest(request);  
 }
 
 void loop() {
