@@ -8,10 +8,10 @@
 SoftwareSerial ESP8266(10,11);
 
 //wifi name and ssid to connect to:
-String nomWifi="***";
-String ssid="***";
-String token="***";
-String variableID="***";
+String nomWifi="**";
+String ssid="**";
+String token="**";
+String variableID="**";
 int pirPIN=7;
 int value=0;
 

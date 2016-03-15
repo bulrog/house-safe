@@ -6,8 +6,8 @@
 SoftwareSerial ESP8266(10,11);
 
 //wifi name and ssid to connect to:
-String nomWifi="***";
-String ssid="***";
+String nomWifi="****";
+String ssid="****";
 
 
 void initializeWifi(){
