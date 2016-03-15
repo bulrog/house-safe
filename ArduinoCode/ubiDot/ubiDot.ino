@@ -1,4 +1,6 @@
+
 #include <SoftwareSerial.h>
+
 
 //connect UTXD of ESP to D10 of Arduino and URXD of ESP to D11 of Arduino
 //PD of ESP should be put to Vcc
@@ -8,16 +10,18 @@ SoftwareSerial ESP8266(10,11);
 //wifi name and ssid to connect to:
 String nomWifi="***";
 String ssid="***";
+String token="***";
+String variableID="***";
+int pirPIN=7;
+int value=0;
 
 
 void initializeWifi(){
-  //set serial to see in serial monitor results:
-  Serial.begin(9600);
-  /*//set serial emulator to 115200 bauds:
+  //set serial emulator to 115200 bauds:
   ESP8266.begin(115200);
   //change ESP to run in 9600 bauds as emulator cannot go so high for reception (not needed if no AT+RST command):
   ESP8266.println("AT+CIOBAUD=9600");
-  recoitDuESP8266(2000);*/
+  recoitDuESP8266(2000);
   //so now change to 9600 for rest of communication:
   ESP8266.begin(9600);
 
@@ -38,8 +42,6 @@ void initializeWifi(){
   ESP8266.println("AT+CIPMUX=1");
   //should get OK:
   recoitDuESP8266(1000);
-  
-  
 }
 
 void performGetRequest(String request){
@@ -80,16 +82,53 @@ void performGetRequest(String request){
   recoitDuESP8266(5000);
 }
 
+void initalizePIR(){
+  int calibrationTime=10;
+  pinMode(pirPIN, INPUT);
+  digitalWrite(pirPIN, LOW);
+ 
+  //give the sensor some time to calibrate
+  Serial.print("calibrating sensor ");
+  for(int i = 0; i < calibrationTime; i++){
+    Serial.print(".");
+    delay(1000);
+    }
+  Serial.println(" done");
+  Serial.println("SENSOR ACTIVE");
+  delay(50);
+}
+
 void setup() {
-  initializeWifi();
+  //set serial to see in serial monitor results:
+  Serial.begin(9600);
+  initalizePIR();
+//  initializeWifi();
   
-  
-  String request="google.com";
-performGetRequest(request);  
 }
 
 void loop() {
-  // put your main code here, to run repeatedly:
+  if (digitalRead(pirPIN) == HIGH){
+    Serial.println("PIR sensor is high");
+    value=value+1;
+    
+  }
+  else {
+        Serial.println("PIR sensor is low");
+
+    if (value>0){
+      value=value-1;
+    }
+  }
+    Serial.print("value is ");
+    Serial.println(value);
+    
+  
+  if (value>0){
+    String request="translate.ubidots.com/api/postvalue/?token="+token+"&variable="+variableID+"&value="+value;
+    Serial.println("send:"+request);
+    //performGetRequest(request);      
+  }
+  delay(1000);
 
 }
 
